@@ -1,11 +1,13 @@
 package br.com.elo7.sondademo.model;
 
 import lombok.Getter;
+import lombok.Setter;
+
 
 @Getter
+@Setter
 public class Grid {
-   private int maximumRightPoint;
-   private int maximumLeftPoint;
+   Coordinates maximumCoordinates;
 
 
 }
