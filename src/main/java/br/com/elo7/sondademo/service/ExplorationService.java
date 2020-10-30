@@ -22,7 +22,7 @@ public class ExplorationService implements ExplorationServiceInterface {
     public List<ExplorationProbe> explore(Exploration explore) {
 
 
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
