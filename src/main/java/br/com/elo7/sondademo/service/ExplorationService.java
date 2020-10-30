@@ -19,8 +19,24 @@ public class ExplorationService implements ExplorationServiceInterface {
     }
 
     @Override
-    public List<ExplorationProbe> explore(Exploration explore) {
+    public List<ExplorationProbe> explore(Exploration exploration) {
+        List<ExplorationProbe> explorationProbes = exploration.getExplorationProbeList();
+        int index = explorationProbes.size();
+        for(int i = 0; i <= index; i += 1){
+            String instructions = explorationProbes.get(i).getPath();
+            char direction = explorationProbes.get(i).getFace();
+            int startX = explorationProbes.get(i).getCoordinatesPosition().getPointX();
+            int starY = explorationProbes.get(i).getCoordinatesPosition().getPointY();
 
+            int j = 0;
+            while (j =! instructions.length()){
+                if (direction == 'N'){
+                    if
+                }
+
+            }
+
+        }
 
         return new ArrayList<>();
     }

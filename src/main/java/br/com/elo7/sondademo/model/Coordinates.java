@@ -3,30 +3,27 @@ package br.com.elo7.sondademo.model;
 
 public class Coordinates {
 
-    private int maximumLeftPoint;
+ private int pointX;
+ private int pointY;
 
-    public int getMaximumLeftPoint() {
-        return maximumLeftPoint;
+    public Coordinates(int pointX, int pointY) {
+        this.pointX = pointX;
+        this.pointY = pointY;
     }
 
-    public void setMaximumLeftPoint(int maximumLeftPoint) {
-        this.maximumLeftPoint = maximumLeftPoint;
+    public int getPointX() {
+        return pointX;
     }
 
-    public int getMaximumRightPoint() {
-        return maximumRightPoint;
+    public void setPointX(int pointX) {
+        this.pointX = pointX;
     }
 
-    public void setMaximumRightPoint(int maximumRightPoint) {
-        this.maximumRightPoint = maximumRightPoint;
+    public int getPointY() {
+        return pointY;
     }
 
-    private int maximumRightPoint;
-
-    public Coordinates (int maximumLeftPoint, int maximumRightPoint){
-        this.maximumLeftPoint = maximumLeftPoint;
-        this.maximumRightPoint = maximumRightPoint;
+    public void setPointY(int pointY) {
+        this.pointY = pointY;
     }
-
-
 }

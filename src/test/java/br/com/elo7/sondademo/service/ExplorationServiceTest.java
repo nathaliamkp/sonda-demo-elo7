@@ -15,9 +15,6 @@ class ExplorationServiceTest {
 
     @Test
     void exploreWithTwoProbes() {
-//        Exploration exploration  = new Exploration("5 5 1 2 N LMLMLMLMM 3 3 E MMRMMRMRRM");
-//
-//        explore(Exploration exploration);
 
 
         ExplorationService explorationService = new ExplorationService();
@@ -43,6 +40,31 @@ class ExplorationServiceTest {
 
         assertNotNull(explorationProbesUpdated);
         assertEquals(2, explorationProbesUpdated.size());
+
+
+    }
+
+    void exploreWithOneProbes() {
+
+
+        ExplorationService explorationService = new ExplorationService();
+
+        Coordinates maximumCoordinates = new Coordinates(5,5);
+        Grid grid = new Grid(maximumCoordinates);
+
+        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
+
+        Coordinates coordinatesPosition1 = new Coordinates(1,2);
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"LMLMLMLMM" );
+        explorationProbeList.add(explorationProbe1);
+
+
+        Exploration exploration = new Exploration(grid, explorationProbeList);
+
+        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
+
+        assertNotNull(explorationProbesUpdated);
+        assertEquals(1, explorationProbesUpdated.size());
 
 
     }
