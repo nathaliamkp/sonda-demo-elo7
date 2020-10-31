@@ -19,6 +19,18 @@ class ExplorationServiceTest {
 
         ExplorationService explorationService = new ExplorationService();
 
+
+        Exploration exploration = mockExploration();
+
+        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
+
+        assertNotNull(explorationProbesUpdated);
+        assertEquals(2, explorationProbesUpdated.size());
+
+
+    }
+
+    private Exploration mockExploration() {
         Coordinates maximumCoordinates = new Coordinates(5,5);
         Grid grid = new Grid(maximumCoordinates);
 
@@ -33,17 +45,10 @@ class ExplorationServiceTest {
         explorationProbeList.add(explorationProbe2);
 
 
-
-        Exploration exploration = new Exploration(grid, explorationProbeList);
-
-        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
-
-        assertNotNull(explorationProbesUpdated);
-        assertEquals(2, explorationProbesUpdated.size());
-
-
+        return new Exploration(grid, explorationProbeList);
     }
 
+    @Test
     void exploreWithOneProbes() {
 
 

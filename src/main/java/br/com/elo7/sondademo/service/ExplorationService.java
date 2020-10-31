@@ -1,10 +1,10 @@
 package br.com.elo7.sondademo.service;
 
+import br.com.elo7.sondademo.model.Coordinates;
 import br.com.elo7.sondademo.model.Exploration;
 import br.com.elo7.sondademo.model.ExplorationProbe;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,26 +20,61 @@ public class ExplorationService implements ExplorationServiceInterface {
 
     @Override
     public List<ExplorationProbe> explore(Exploration exploration) {
-        List<ExplorationProbe> explorationProbes = exploration.getExplorationProbeList();
-        int index = explorationProbes.size();
-        for(int i = 0; i <= index; i += 1){
-            String instructions = explorationProbes.get(i).getPath();
-            char direction = explorationProbes.get(i).getFace();
-            int startX = explorationProbes.get(i).getCoordinatesPosition().getPointX();
-            int starY = explorationProbes.get(i).getCoordinatesPosition().getPointY();
+        List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
+        for (ExplorationProbe explorationProbe : explorationProbeList) {
+            String instructions = explorationProbe.getPath();
+            char direction = explorationProbe.getFace();
+            Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
+            int startX = coordinatesPosition.getPointX();
+            int startY = coordinatesPosition.getPointY();
 
             int j = 0;
-            while (j =! instructions.length()){
-                if (direction == 'N'){
-                    if
+            while (j < instructions.length()) {
+                if (direction == 'N') {
+                    if (instructions.charAt(j) == 'M') {
+                        startY = startY + 1;
+                    } else if (instructions.charAt(j) == 'R') {
+                        direction = 'E';
+                    } else if (instructions.charAt(j) == 'L') {
+                        direction = 'W';
+                    }
+                } else if (direction == 'S') {
+                    if (instructions.charAt(j) == 'M') {
+                        startY = startY - 1;
+                    } else if (instructions.charAt(j) == 'R') {
+                        direction = 'W';
+                    } else if (instructions.charAt(j) == 'L') {
+                        direction = 'E';
+                    }
+                } else if (direction == 'W') {
+                    if (instructions.charAt(j) == 'M') {
+                        startX = startX - 1;
+                    } else if (instructions.charAt(j) == 'R') {
+                        direction = 'N';
+                    } else if (instructions.charAt(j) == 'L') {
+                        direction = 'S';
+                    }
+                } else if (direction == 'E') {
+                    if (instructions.charAt(j) == 'M') {
+                        startX = startX + 1;
+                    } else if (instructions.charAt(j) == 'R') {
+                        direction = 'S';
+                    } else if (instructions.charAt(j) == 'L') {
+                        direction = 'N';
+                    }
                 }
-
+                j = j + 1;
             }
 
+            coordinatesPosition.setPointX(startX);
+            coordinatesPosition.setPointY(startY);
+            explorationProbe.setFace(direction);
         }
 
-        return new ArrayList<>();
+        return explorationProbeList;
     }
+
+
 
     @Override
     public String convertToString(List<ExplorationProbe> explorationProbeList) {
@@ -48,15 +83,6 @@ public class ExplorationService implements ExplorationServiceInterface {
     }
 
 
-//    public List<ExplorationProbe> explorationParse(Exploration exploration){
-//        List<ExplorationProbe> explorationProbes = new ArrayList<ExplorationProbe>();
-//        String inicialData = exploration.getData();
-//        int maximumLeftPoint = inicialData.charAt(0);
-//        int maximumRightPoint = inicialData.charAt(3);
-//
-//        return null;
-//
-//    }
 
 
 
