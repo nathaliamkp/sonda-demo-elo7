@@ -73,4 +73,17 @@ class ExplorationServiceTest {
 
 
     }
+
+    @Test
+    void extractDataWhenDataHasOneProbe(){
+        ExplorationService explorationService = new ExplorationService();
+
+        String data = "5 5 1 2 N LMLMLMLMM" ;
+
+        Exploration exploration = explorationService.parseStringData(data);
+
+        assertNotNull(exploration.getExplorationProbeList());
+        assertEquals(1, exploration.getExplorationProbeList().size());
+
+    }
 }
