@@ -7,60 +7,43 @@ import br.com.elo7.sondademo.model.Grid;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 @Service
 public class ExplorationService implements ExplorationServiceInterface {
 
-//    "5 5\n" +
-//    "1 2 N\n" +
-//    "LMLMLMLMM";
-
     @Override
     public Exploration parseStringData(String data) {
+        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
+        String[] split = data.split("\n");
+        List <String> parseData = Arrays.asList(split);
 
-        int pointX = Character.getNumericValue(data.charAt(0));
-        int pointY = Character.getNumericValue(data.charAt(2));
-        Coordinates maximumCoordinates = new Coordinates(pointX, pointY);
+        String gridCoordinate =  parseData.get(0);
+        int maximumPointX = Character.getNumericValue(gridCoordinate.charAt(0));
+        int maximumPointY = Character.getNumericValue(gridCoordinate.charAt(2));
+        Coordinates maximumCoordinates = new Coordinates(maximumPointX, maximumPointY);
         Grid grid = new Grid(maximumCoordinates);
 
+        for (int i = 1; i < parseData.size(); i += 2){
+            String probe = parseData.get(i);
 
-        List<ExplorationProbe> explorationProbeList = findProbesAndPaths(data);
+            int pointX = Character.getNumericValue(probe.charAt(0));
+            int pointY = Character.getNumericValue(probe.charAt(2));
+            char face = probe.charAt(4);
+            String path = parseData.get(i+1);
 
-        Exploration exploration = new Exploration(grid, explorationProbeList);
-        return exploration;
+            Coordinates coordinatesPosition = new Coordinates(pointX, pointY);
+            ExplorationProbe explorationProbe = new ExplorationProbe(coordinatesPosition, face, path);
+            explorationProbeList.add(explorationProbe);
         }
 
-     private List<ExplorationProbe> findProbesAndPaths(String data){
-         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
-         for (int i = 3; i < data.length(); i += 1) {
-             if ((data.charAt(i - 1) == '\n') && Character.isDigit(data.charAt(i)) && Character.isDigit(data.charAt(i + 2))){
-                 int pointX = Character.getNumericValue(data.charAt(i));
-                 int pointY = Character.getNumericValue(data.charAt(i + 2));
-                 char face = data.charAt(i + 4);
-                 String startPath = data.substring(i + 6) ;
-                    for (int j = 0; j < startPath.length(); j+= 1){
-                        if ((startPath.charAt(j) == ' ') || ((j + 1) == startPath.length())) {
-                            String path = " ";
-                            if (startPath.charAt(j) == ' '){
-                                path = startPath.substring(0, j);
-                            } else if ((j + 1) == startPath.length()){
-                                path = startPath;
-                            }
-                                Coordinates coordinatesPosition = new Coordinates(pointX, pointY);
-                                ExplorationProbe explorationProbe = new ExplorationProbe(coordinatesPosition, face, path);
-                                explorationProbeList.add(explorationProbe);
+        return new Exploration(grid, explorationProbeList);
 
-                                break;
-                        }
-                    }
-             }
-         }
+        }
 
-         return explorationProbeList;
-     }
 
 
 
@@ -124,9 +107,17 @@ public class ExplorationService implements ExplorationServiceInterface {
 
 
     @Override
-    public String convertToString(List<ExplorationProbe> explorationProbeList) {
+    public String convertToString(List<ExplorationProbe> explorationProbeListUpdated) {
+        String dataUpdated = " ";
+        for (ExplorationProbe explorationProbe : explorationProbeListUpdated) {
+            String pointX = Integer.toString(explorationProbe.getCoordinatesPosition().getPointX()) + " ";
+            String pointY = Integer.toString(explorationProbe.getCoordinatesPosition().getPointY())+ " ";
+            String face = Character.toString(explorationProbe.getFace());
+            String probeUpdated = pointX + pointY + face + "\n";
+            dataUpdated = dataUpdated + probeUpdated;
+        }
 
-        return null;
+        return dataUpdated;
     }
 
 

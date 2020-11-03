@@ -57,14 +57,8 @@ class ExplorationServiceTest {
         Coordinates maximumCoordinates = new Coordinates(5,5);
         Grid grid = new Grid(maximumCoordinates);
 
-        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
-
-        Coordinates coordinatesPosition1 = new Coordinates(1,2);
-        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"LMLMLMLMM" );
-        explorationProbeList.add(explorationProbe1);
-
-
-        Exploration exploration = new Exploration(grid, explorationProbeList);
+        Exploration exploration = mockExploration();
+        exploration.getExplorationProbeList().remove(1);
 
         List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
 
@@ -86,6 +80,43 @@ class ExplorationServiceTest {
 
         assertNotNull(exploration.getExplorationProbeList());
         assertEquals(1, exploration.getExplorationProbeList().size());
+
+    }
+
+    @Test
+    void extractDataWhenItHasMoreThanOneProbe(){
+        String data = "5 5\n" +
+                "1 2 N\n" +
+                "LMLMLMLMM\n" +
+                "3 3 E\n" +
+                "MMRMMRMRRM";
+        ExplorationService explorationService = new ExplorationService();
+
+
+        Exploration exploration = explorationService.parseStringData(data);
+
+        assertNotNull(exploration.getExplorationProbeList());
+        assertEquals(2, exploration.getExplorationProbeList().size());
+
+    }
+
+
+
+    @Test
+    void returnStringFromOneProrbe(){
+
+        ExplorationService explorationService = new ExplorationService();
+
+
+        Exploration exploration = mockExploration();
+
+        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
+
+        String dataUpdated = explorationService.convertToString(explorationProbesUpdated);
+
+        assertNotNull(dataUpdated);
+
+
 
     }
 
