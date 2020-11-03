@@ -19,21 +19,21 @@ public class ExplorationService implements ExplorationServiceInterface {
         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
         String[] split = data.split("\n");
-        List <String> parseData = Arrays.asList(split);
+        List<String> parseData = Arrays.asList(split);
 
-        String gridCoordinate =  parseData.get(0);
+        String gridCoordinate = parseData.get(0);
         int maximumPointX = Character.getNumericValue(gridCoordinate.charAt(0));
         int maximumPointY = Character.getNumericValue(gridCoordinate.charAt(2));
         Coordinates maximumCoordinates = new Coordinates(maximumPointX, maximumPointY);
         Grid grid = new Grid(maximumCoordinates);
 
-        for (int i = 1; i < parseData.size(); i += 2){
+        for (int i = 1; i < parseData.size(); i += 2) {
             String probe = parseData.get(i);
+            String path = parseData.get(i + 1);
 
             int pointX = Character.getNumericValue(probe.charAt(0));
             int pointY = Character.getNumericValue(probe.charAt(2));
             char face = probe.charAt(4);
-            String path = parseData.get(i+1);
 
             Coordinates coordinatesPosition = new Coordinates(pointX, pointY);
             ExplorationProbe explorationProbe = new ExplorationProbe(coordinatesPosition, face, path);
@@ -42,14 +42,13 @@ public class ExplorationService implements ExplorationServiceInterface {
 
         return new Exploration(grid, explorationProbeList);
 
-        }
-
-
+    }
 
 
     @Override
     public List<ExplorationProbe> explore(Exploration exploration) {
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
+        List<ExplorationProbe> explorationProbeListUpdated = new ArrayList<>();
         for (ExplorationProbe explorationProbe : explorationProbeList) {
             String path = explorationProbe.getPath();
             Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
@@ -57,12 +56,19 @@ public class ExplorationService implements ExplorationServiceInterface {
             char face = explorationProbe.getFace();
             int startX = coordinatesPosition.getPointX();
             int startY = coordinatesPosition.getPointY();
+            int maximumPointY = exploration.getGrid().getMaximumCoordinates().getPointY();
+            int maximumPointX = exploration.getGrid().getMaximumCoordinates().getPointX();
+            int walk;
+            int point;
 
             int j = 0;
             while (j < path.length()) {
                 if (face == 'N') {
                     if (path.charAt(j) == 'M') {
-                        startY = startY + 1;
+                        walk = 1;
+                        point = startY;
+                        point = pathIfProbreWouldPassGrid(point, maximumPointY, walk);
+                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'E';
                     } else if (path.charAt(j) == 'L') {
@@ -70,7 +76,10 @@ public class ExplorationService implements ExplorationServiceInterface {
                     }
                 } else if (face == 'S') {
                     if (path.charAt(j) == 'M') {
-                        startY = startY - 1;
+                        walk = -1;
+                        point = startY;
+                        point = pathIfProbreWouldPassGrid(point, maximumPointY, walk);
+                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'W';
                     } else if (path.charAt(j) == 'L') {
@@ -78,7 +87,10 @@ public class ExplorationService implements ExplorationServiceInterface {
                     }
                 } else if (face == 'W') {
                     if (path.charAt(j) == 'M') {
-                        startX = startX - 1;
+                        walk = -1;
+                        point = startX;
+                        point = pathIfProbreWouldPassGrid(point, maximumPointX, walk);
+                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'N';
                     } else if (path.charAt(j) == 'L') {
@@ -86,7 +98,10 @@ public class ExplorationService implements ExplorationServiceInterface {
                     }
                 } else if (face == 'E') {
                     if (path.charAt(j) == 'M') {
-                        startX = startX + 1;
+                        walk = 1;
+                        point = startX;
+                        point = pathIfProbreWouldPassGrid(point, maximumPointX, walk);
+                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'S';
                     } else if (path.charAt(j) == 'L') {
@@ -95,26 +110,46 @@ public class ExplorationService implements ExplorationServiceInterface {
                 }
                 j = j + 1;
             }
-
             coordinatesPosition.setPointX(startX);
             coordinatesPosition.setPointY(startY);
             explorationProbe.setFace(face);
+            explorationProbeListUpdated.add(explorationProbe);
+
+
+        }
+            return explorationProbeListUpdated;
+    }
+
+
+    private int pathIfTheProbeFindsAnotherProbe ( List<ExplorationProbe> explorationProbesUpdated, int startY, int startX, int point, int walk) {
+        for (ExplorationProbe explorationProbe: explorationProbesUpdated){
+            if (startX == explorationProbe.getCoordinatesPosition().getPointX() && startY == explorationProbe.getCoordinatesPosition().getPointY() ){
+                point = point - walk;
+                return point;
+            }else return point;
+
         }
 
-        return explorationProbeList;
+    }
+
+    private int pathIfProbreWouldPassGrid (int point, int maximumPoit, int walk) {
+        point = point + walk;
+        if (point < maximumPoit){
+            return point;
+        } else return maximumPoit;
     }
 
 
 
     @Override
     public String convertToString(List<ExplorationProbe> explorationProbeListUpdated) {
-        String dataUpdated = " ";
+        String dataUpdated = "";
         for (ExplorationProbe explorationProbe : explorationProbeListUpdated) {
-            String pointX = Integer.toString(explorationProbe.getCoordinatesPosition().getPointX()) + " ";
-            String pointY = Integer.toString(explorationProbe.getCoordinatesPosition().getPointY())+ " ";
+            String pointX = explorationProbe.getCoordinatesPosition().getPointX() + " ";
+            String pointY = explorationProbe.getCoordinatesPosition().getPointY() + " ";
             String face = Character.toString(explorationProbe.getFace());
             String probeUpdated = pointX + pointY + face + "\n";
-            dataUpdated = dataUpdated + probeUpdated;
+            dataUpdated += probeUpdated;
         }
 
         return dataUpdated;
