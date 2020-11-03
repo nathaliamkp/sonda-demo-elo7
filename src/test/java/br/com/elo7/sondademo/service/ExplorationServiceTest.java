@@ -76,9 +76,11 @@ class ExplorationServiceTest {
 
     @Test
     void extractDataWhenDataHasOneProbe(){
+        String data = "5 5\n" +
+                "1 2 N\n" +
+                "LMLMLMLMM";
         ExplorationService explorationService = new ExplorationService();
 
-        String data = "5 5 1 2 N LMLMLMLMM" ;
 
         Exploration exploration = explorationService.parseStringData(data);
 
@@ -86,4 +88,5 @@ class ExplorationServiceTest {
         assertEquals(1, exploration.getExplorationProbeList().size());
 
     }
+
 }

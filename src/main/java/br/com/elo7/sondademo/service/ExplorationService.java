@@ -13,7 +13,9 @@ import java.util.List;
 @Service
 public class ExplorationService implements ExplorationServiceInterface {
 
-//    "5 5 1 2 N LMLMLMLMM"
+//    "5 5\n" +
+//    "1 2 N\n" +
+//    "LMLMLMLMM";
 
     @Override
     public Exploration parseStringData(String data) {
@@ -24,26 +26,41 @@ public class ExplorationService implements ExplorationServiceInterface {
         Coordinates maximumCoordinates = new Coordinates(pointX, pointY);
         Grid grid = new Grid(maximumCoordinates);
 
-        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
-            for (int i = 3; i < data.length(); i += 1) {
-                int verify = 0;
-                if (data.charAt(i-1) == '0') {
-                    verify =1;
-                    int pointX = Character.getNumericValue(data.charAt(i));
-                    int pointY = Character.getNumericValue(data.charAt(i + 2));
-                    char face = data.charAt(i + 4);
-
-
-
-                } else if (i == 4) {
-
-                }
-            }
+        List<ExplorationProbe> explorationProbeList = findProbesAndPaths(data);
 
         Exploration exploration = new Exploration(grid, explorationProbeList);
         return exploration;
         }
+
+     private List<ExplorationProbe> findProbesAndPaths(String data){
+         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
+         for (int i = 3; i < data.length(); i += 1) {
+             if ((data.charAt(i - 1) == '\n') && Character.isDigit(data.charAt(i)) && Character.isDigit(data.charAt(i + 2))){
+                 int pointX = Character.getNumericValue(data.charAt(i));
+                 int pointY = Character.getNumericValue(data.charAt(i + 2));
+                 char face = data.charAt(i + 4);
+                 String startPath = data.substring(i + 6) ;
+                    for (int j = 0; j < startPath.length(); j+= 1){
+                        if ((startPath.charAt(j) == ' ') || ((j + 1) == startPath.length())) {
+                            String path = " ";
+                            if (startPath.charAt(j) == ' '){
+                                path = startPath.substring(0, j);
+                            } else if ((j + 1) == startPath.length()){
+                                path = startPath;
+                            }
+                                Coordinates coordinatesPosition = new Coordinates(pointX, pointY);
+                                ExplorationProbe explorationProbe = new ExplorationProbe(coordinatesPosition, face, path);
+                                explorationProbeList.add(explorationProbe);
+
+                                break;
+                        }
+                    }
+             }
+         }
+
+         return explorationProbeList;
+     }
 
 
 
@@ -51,45 +68,46 @@ public class ExplorationService implements ExplorationServiceInterface {
     public List<ExplorationProbe> explore(Exploration exploration) {
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
         for (ExplorationProbe explorationProbe : explorationProbeList) {
-            String instructions = explorationProbe.getPath();
-            char direction = explorationProbe.getFace();
+            String path = explorationProbe.getPath();
             Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
+
+            char face = explorationProbe.getFace();
             int startX = coordinatesPosition.getPointX();
             int startY = coordinatesPosition.getPointY();
 
             int j = 0;
-            while (j < instructions.length()) {
-                if (direction == 'N') {
-                    if (instructions.charAt(j) == 'M') {
+            while (j < path.length()) {
+                if (face == 'N') {
+                    if (path.charAt(j) == 'M') {
                         startY = startY + 1;
-                    } else if (instructions.charAt(j) == 'R') {
-                        direction = 'E';
-                    } else if (instructions.charAt(j) == 'L') {
-                        direction = 'W';
+                    } else if (path.charAt(j) == 'R') {
+                        face = 'E';
+                    } else if (path.charAt(j) == 'L') {
+                        face = 'W';
                     }
-                } else if (direction == 'S') {
-                    if (instructions.charAt(j) == 'M') {
+                } else if (face == 'S') {
+                    if (path.charAt(j) == 'M') {
                         startY = startY - 1;
-                    } else if (instructions.charAt(j) == 'R') {
-                        direction = 'W';
-                    } else if (instructions.charAt(j) == 'L') {
-                        direction = 'E';
+                    } else if (path.charAt(j) == 'R') {
+                        face = 'W';
+                    } else if (path.charAt(j) == 'L') {
+                        face = 'E';
                     }
-                } else if (direction == 'W') {
-                    if (instructions.charAt(j) == 'M') {
+                } else if (face == 'W') {
+                    if (path.charAt(j) == 'M') {
                         startX = startX - 1;
-                    } else if (instructions.charAt(j) == 'R') {
-                        direction = 'N';
-                    } else if (instructions.charAt(j) == 'L') {
-                        direction = 'S';
+                    } else if (path.charAt(j) == 'R') {
+                        face = 'N';
+                    } else if (path.charAt(j) == 'L') {
+                        face = 'S';
                     }
-                } else if (direction == 'E') {
-                    if (instructions.charAt(j) == 'M') {
+                } else if (face == 'E') {
+                    if (path.charAt(j) == 'M') {
                         startX = startX + 1;
-                    } else if (instructions.charAt(j) == 'R') {
-                        direction = 'S';
-                    } else if (instructions.charAt(j) == 'L') {
-                        direction = 'N';
+                    } else if (path.charAt(j) == 'R') {
+                        face = 'S';
+                    } else if (path.charAt(j) == 'L') {
+                        face = 'N';
                     }
                 }
                 j = j + 1;
@@ -97,7 +115,7 @@ public class ExplorationService implements ExplorationServiceInterface {
 
             coordinatesPosition.setPointX(startX);
             coordinatesPosition.setPointY(startY);
-            explorationProbe.setFace(direction);
+            explorationProbe.setFace(face);
         }
 
         return explorationProbeList;
