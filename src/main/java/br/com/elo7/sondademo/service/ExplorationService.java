@@ -48,7 +48,7 @@ public class ExplorationService implements ExplorationServiceInterface {
     @Override
     public List<ExplorationProbe> explore(Exploration exploration) {
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
-        List<ExplorationProbe> explorationProbeListUpdated = new ArrayList<>();
+        List<ExplorationProbe> explorationProbeUpdate = new ArrayList<>();
         for (ExplorationProbe explorationProbe : explorationProbeList) {
             String path = explorationProbe.getPath();
             Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
@@ -66,9 +66,9 @@ public class ExplorationService implements ExplorationServiceInterface {
                 if (face == 'N') {
                     if (path.charAt(j) == 'M') {
                         walk = 1;
+                        startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
                         point = startY;
-                        point = pathIfProbreWouldPassGrid(point, maximumPointY, walk);
-                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
+                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'E';
                     } else if (path.charAt(j) == 'L') {
@@ -77,9 +77,9 @@ public class ExplorationService implements ExplorationServiceInterface {
                 } else if (face == 'S') {
                     if (path.charAt(j) == 'M') {
                         walk = -1;
+                        startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
                         point = startY;
-                        point = pathIfProbreWouldPassGrid(point, maximumPointY, walk);
-                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
+                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'W';
                     } else if (path.charAt(j) == 'L') {
@@ -88,9 +88,9 @@ public class ExplorationService implements ExplorationServiceInterface {
                 } else if (face == 'W') {
                     if (path.charAt(j) == 'M') {
                         walk = -1;
+                        startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
                         point = startX;
-                        point = pathIfProbreWouldPassGrid(point, maximumPointX, walk);
-                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
+                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'N';
                     } else if (path.charAt(j) == 'L') {
@@ -99,9 +99,9 @@ public class ExplorationService implements ExplorationServiceInterface {
                 } else if (face == 'E') {
                     if (path.charAt(j) == 'M') {
                         walk = 1;
+                        startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
                         point = startX;
-                        point = pathIfProbreWouldPassGrid(point, maximumPointX, walk);
-                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeListUpdated, startY, startX, point, walk);
+                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
                     } else if (path.charAt(j) == 'R') {
                         face = 'S';
                     } else if (path.charAt(j) == 'L') {
@@ -113,11 +113,11 @@ public class ExplorationService implements ExplorationServiceInterface {
             coordinatesPosition.setPointX(startX);
             coordinatesPosition.setPointY(startY);
             explorationProbe.setFace(face);
-            explorationProbeListUpdated.add(explorationProbe);
+            explorationProbeUpdate.add(explorationProbe);
 
 
         }
-            return explorationProbeListUpdated;
+            return explorationProbeList;
     }
 
 

@@ -157,7 +157,7 @@ class ExplorationServiceTest {
 
 
     @Test
-    void returnStringFromOneProrbe(){
+    void returnStringFromOneProbe(){
 
         ExplorationService explorationService = new ExplorationService();
 
