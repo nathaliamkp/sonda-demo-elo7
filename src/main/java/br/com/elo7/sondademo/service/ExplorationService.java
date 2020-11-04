@@ -125,11 +125,10 @@ public class ExplorationService implements ExplorationServiceInterface {
         for (ExplorationProbe explorationProbe: explorationProbesUpdated){
             if (startX == explorationProbe.getCoordinatesPosition().getPointX() && startY == explorationProbe.getCoordinatesPosition().getPointY() ){
                 point = point - walk;
-                return point;
-            }else return point;
+            }
 
         }
-
+        return point;
     }
 
     private int pathIfProbreWouldPassGrid (int point, int maximumPoit, int walk) {

@@ -48,14 +48,68 @@ class ExplorationServiceTest {
         return new Exploration(grid, explorationProbeList);
     }
 
+    private Exploration mockExplorationWithProbesShockingAgainstProbes(){
+        Coordinates maximumCoordinates = new Coordinates(5,5);
+        Grid grid = new Grid(maximumCoordinates);
+
+        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
+
+        Coordinates coordinatesPosition1 = new Coordinates(1,2);
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"M" );
+        explorationProbeList.add(explorationProbe1);
+
+        Coordinates coordinatesPosition2 = new Coordinates(2,3);
+        ExplorationProbe explorationProbe2 = new ExplorationProbe(coordinatesPosition2, 'W', "M");
+        explorationProbeList.add(explorationProbe2);
+
+        return new Exploration(grid, explorationProbeList);
+    }
+
+
+    private Exploration mockExploratioPobreShokingAgainstGrid(){
+        Coordinates maximumCoordinates = new Coordinates(5,5);
+        Grid grid = new Grid(maximumCoordinates);
+
+        List<ExplorationProbe> explorationProbeList = new ArrayList<>();
+
+        Coordinates coordinatesPosition1 = new Coordinates(4,0);
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"MMRMMMRM");
+        explorationProbeList.add(explorationProbe1);
+
+
+
+        return new Exploration(grid, explorationProbeList);
+    }
+
+    @Test
+    void exploreWithProbeShockingAgainstGrid(){
+        ExplorationService explorationService = new ExplorationService();
+
+        Exploration exploration = mockExploratioPobreShokingAgainstGrid();
+        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
+
+        assertNotNull(explorationProbesUpdated);
+        assertEquals(1, explorationProbesUpdated.size());
+
+    }
+
+    @Test
+    void exploreWithProbeShokingAgainstAnotherProbe(){
+        ExplorationService explorationService = new ExplorationService();
+
+
+        Exploration exploration = mockExplorationWithProbesShockingAgainstProbes();
+        List<ExplorationProbe> explorationProbesUpdated = explorationService.explore(exploration);
+
+        assertNotNull(explorationProbesUpdated);
+        assertEquals(2, explorationProbesUpdated.size());
+
+    }
+
     @Test
     void exploreWithOneProbes() {
 
-
         ExplorationService explorationService = new ExplorationService();
-
-        Coordinates maximumCoordinates = new Coordinates(5,5);
-        Grid grid = new Grid(maximumCoordinates);
 
         Exploration exploration = mockExploration();
         exploration.getExplorationProbeList().remove(1);
