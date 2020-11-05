@@ -27,4 +27,12 @@ public class Exploration {
     public void setExplorationProbeList(List<ExplorationProbe> explorationProbeList) {
         this.explorationProbeList = explorationProbeList;
     }
+
+    @Override
+    public String toString() {
+        return "Exploration{" +
+                "grid=" + grid +
+                ", explorationProbeList=" + explorationProbeList +
+                '}';
+    }
 }

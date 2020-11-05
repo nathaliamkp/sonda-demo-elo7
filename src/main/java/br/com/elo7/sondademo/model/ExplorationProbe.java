@@ -37,4 +37,13 @@ public class ExplorationProbe {
 
 
     }
+
+    @Override
+    public String toString() {
+        return "ExplorationProbe{" +
+                "coordinatesPosition=" + coordinatesPosition +
+                ", face=" + face +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

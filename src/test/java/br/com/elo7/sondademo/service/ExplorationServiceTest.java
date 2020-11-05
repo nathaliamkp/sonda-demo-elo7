@@ -13,10 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ExplorationServiceTest {
 
+
     @Test
-    void exploreWithTwoProbes() {
-
-
+    void exploreWithTwoProbes() throws Exception {
         ExplorationService explorationService = new ExplorationService();
 
 
@@ -27,7 +26,6 @@ class ExplorationServiceTest {
         assertNotNull(explorationProbesUpdated);
         assertEquals(2, explorationProbesUpdated.size());
 
-
     }
 
     private Exploration mockExploration() {
@@ -36,8 +34,8 @@ class ExplorationServiceTest {
 
         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
-        Coordinates coordinatesPosition1 = new Coordinates(1,2);
-        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"LMLMLMLMM" );
+        Coordinates coordinatesPosition1 = new Coordinates(1,3);
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'W',"RLM" );
         explorationProbeList.add(explorationProbe1);
 
         Coordinates coordinatesPosition2 = new Coordinates(3,3);
@@ -82,7 +80,7 @@ class ExplorationServiceTest {
     }
 
     @Test
-    void exploreWithProbeShockingAgainstGrid(){
+    void exploreWithProbeShockingAgainstGrid() throws Exception {
         ExplorationService explorationService = new ExplorationService();
 
         Exploration exploration = mockExploratioPobreShokingAgainstGrid();
@@ -94,7 +92,7 @@ class ExplorationServiceTest {
     }
 
     @Test
-    void exploreWithProbeShokingAgainstAnotherProbe(){
+    void exploreWithProbeShokingAgainstAnotherProbe() throws Exception {
         ExplorationService explorationService = new ExplorationService();
 
 
@@ -107,7 +105,7 @@ class ExplorationServiceTest {
     }
 
     @Test
-    void exploreWithOneProbes() {
+    void exploreWithOneProbes() throws Exception {
 
         ExplorationService explorationService = new ExplorationService();
 
@@ -118,13 +116,18 @@ class ExplorationServiceTest {
 
         assertNotNull(explorationProbesUpdated);
         assertEquals(1, explorationProbesUpdated.size());
+        assertEquals(0,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointX());
+        assertEquals(3,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointY());
+        assertEquals('W',explorationProbesUpdated.get(0).getFace());
+
+
 
 
     }
 
     @Test
     void extractDataWhenDataHasOneProbe(){
-        String data = "5 5\n" +
+        String data = "10 10\n" +
                 "1 2 N\n" +
                 "LMLMLMLMM";
         ExplorationService explorationService = new ExplorationService();
@@ -157,7 +160,7 @@ class ExplorationServiceTest {
 
 
     @Test
-    void returnStringFromOneProbe(){
+    void returnStringFromOneProbe() throws Exception {
 
         ExplorationService explorationService = new ExplorationService();
 

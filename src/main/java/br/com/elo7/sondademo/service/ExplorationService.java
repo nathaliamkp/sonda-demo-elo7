@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+//"10 10"
 
 @Service
 public class ExplorationService implements ExplorationServiceInterface {
+
+
 
     @Override
     public Exploration parseStringData(String data) {
@@ -21,19 +23,28 @@ public class ExplorationService implements ExplorationServiceInterface {
         String[] split = data.split("\n");
         List<String> parseData = Arrays.asList(split);
 
+
         String gridCoordinate = parseData.get(0);
-        int maximumPointX = Character.getNumericValue(gridCoordinate.charAt(0));
-        int maximumPointY = Character.getNumericValue(gridCoordinate.charAt(2));
+        String[] coordinate = gridCoordinate.split(" ");
+        List<String> coordinatesGrid = Arrays.asList(coordinate);
+
+
+        int maximumPointX = Integer.parseInt(coordinatesGrid.get(0));
+        int maximumPointY = Integer.parseInt(coordinatesGrid.get(1));
         Coordinates maximumCoordinates = new Coordinates(maximumPointX, maximumPointY);
         Grid grid = new Grid(maximumCoordinates);
 
         for (int i = 1; i < parseData.size(); i += 2) {
-            String probe = parseData.get(i);
+            String probeData = parseData.get(i);
+            String[] probeSplit = probeData.split(" ");
+            List<String> probe = Arrays.asList(probeSplit);
+
+
+            int pointX = Integer.parseInt(probe.get(0));
+            int pointY = Integer.parseInt(probe.get(1));
+            char face = probe.get(2).charAt(0);
             String path = parseData.get(i + 1);
 
-            int pointX = Character.getNumericValue(probe.charAt(0));
-            int pointY = Character.getNumericValue(probe.charAt(2));
-            char face = probe.charAt(4);
 
             Coordinates coordinatesPosition = new Coordinates(pointX, pointY);
             ExplorationProbe explorationProbe = new ExplorationProbe(coordinatesPosition, face, path);
@@ -44,11 +55,20 @@ public class ExplorationService implements ExplorationServiceInterface {
 
     }
 
+    private void validateExploration(Exploration exploration) throws Exception {
+        List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
+        for (ExplorationProbe explorationProbe : explorationProbeList) {
+            if (exploration.getGrid().getMaximumCoordinates().getPointY() < explorationProbe.getCoordinatesPosition().getPointY() || exploration.getGrid().getMaximumCoordinates().getPointX() < explorationProbe.getCoordinatesPosition().getPointX()){
+                throw new Exception(" ");
+            }
+        }
+    }
 
     @Override
-    public List<ExplorationProbe> explore(Exploration exploration) {
+    public List<ExplorationProbe> explore(Exploration exploration) throws Exception {
+        validateExploration(exploration);
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
-        List<ExplorationProbe> explorationProbeUpdate = new ArrayList<>();
+        List<ExplorationProbe> explorationProbesUpdates = new ArrayList<>();
         for (ExplorationProbe explorationProbe : explorationProbeList) {
             String path = explorationProbe.getPath();
             Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
@@ -58,66 +78,68 @@ public class ExplorationService implements ExplorationServiceInterface {
             int startY = coordinatesPosition.getPointY();
             int maximumPointY = exploration.getGrid().getMaximumCoordinates().getPointY();
             int maximumPointX = exploration.getGrid().getMaximumCoordinates().getPointX();
-            int walk;
-            int point;
 
-            int j = 0;
-            while (j < path.length()) {
-                if (face == 'N') {
-                    if (path.charAt(j) == 'M') {
-                        walk = 1;
-                        startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
-                        point = startY;
-                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
-                    } else if (path.charAt(j) == 'R') {
-                        face = 'E';
-                    } else if (path.charAt(j) == 'L') {
-                        face = 'W';
-                    }
-                } else if (face == 'S') {
-                    if (path.charAt(j) == 'M') {
-                        walk = -1;
-                        startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
-                        point = startY;
-                        startY = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
-                    } else if (path.charAt(j) == 'R') {
-                        face = 'W';
-                    } else if (path.charAt(j) == 'L') {
-                        face = 'E';
-                    }
-                } else if (face == 'W') {
-                    if (path.charAt(j) == 'M') {
-                        walk = -1;
-                        startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
-                        point = startX;
-                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
-                    } else if (path.charAt(j) == 'R') {
-                        face = 'N';
-                    } else if (path.charAt(j) == 'L') {
-                        face = 'S';
-                    }
-                } else if (face == 'E') {
-                    if (path.charAt(j) == 'M') {
-                        walk = 1;
-                        startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
-                        point = startX;
-                        startX = pathIfTheProbeFindsAnotherProbe(explorationProbeUpdate, startY, startX, point, walk);
-                    } else if (path.charAt(j) == 'R') {
-                        face = 'S';
-                    } else if (path.charAt(j) == 'L') {
-                        face = 'N';
-                    }
-                }
-                j = j + 1;
-            }
-            coordinatesPosition.setPointX(startX);
-            coordinatesPosition.setPointY(startY);
-            explorationProbe.setFace(face);
-            explorationProbeUpdate.add(explorationProbe);
-
+            explorationProbe = walking(path,face, startX, startY, maximumPointY, maximumPointX, explorationProbesUpdates);
+            explorationProbesUpdates.add(explorationProbe);
 
         }
-            return explorationProbeList;
+            return explorationProbesUpdates;
+    }
+
+    private ExplorationProbe walking(String path, char face, int startX, int startY, int maximumPointY, int maximumPointX, List<ExplorationProbe> explorationProbesUpdated){
+        int walk;
+        int point;
+        int j = 0;
+        while (j < path.length()) {
+            if (face == 'N') {
+                if (path.charAt(j) == 'M') {
+                    walk = 1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = 'E';
+                } else if (path.charAt(j) == 'L') {
+                    face = 'W';
+                }
+            } else if (face == 'S') {
+                if (path.charAt(j) == 'M') {
+                    walk = -1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = 'W';
+                } else if (path.charAt(j) == 'L') {
+                    face = 'E';
+                }
+            } else if (face == 'W') {
+                if (path.charAt(j) == 'M') {
+                    walk = -1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = 'N';
+                } else if (path.charAt(j) == 'L') {
+                    face = 'S';
+                }
+            } else if (face == 'E') {
+                if (path.charAt(j) == 'M') {
+                    walk = 1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = 'S';
+                } else if (path.charAt(j) == 'L') {
+                    face = 'N';
+                }
+            }
+            j = j + 1;
+        }
+        Coordinates coordinatesPosition = new Coordinates(startX,startY);
+        return new ExplorationProbe(coordinatesPosition,face, path);
     }
 
 

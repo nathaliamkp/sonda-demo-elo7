@@ -10,7 +10,7 @@ public interface ExplorationServiceInterface {
 
     public Exploration parseStringData (String data);
 
-    public List<ExplorationProbe> explore (Exploration exploration);
+    public List<ExplorationProbe> explore (Exploration exploration) throws Exception;
 
     public String convertToString (List<ExplorationProbe> explorationProbeList );
 }

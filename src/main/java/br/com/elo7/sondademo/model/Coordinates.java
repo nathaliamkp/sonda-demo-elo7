@@ -26,4 +26,12 @@ public class Coordinates {
     public void setPointY(int pointY) {
         this.pointY = pointY;
     }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "pointX=" + pointX +
+                ", pointY=" + pointY +
+                '}';
+    }
 }

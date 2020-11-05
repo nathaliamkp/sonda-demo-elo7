@@ -2,7 +2,7 @@ package br.com.elo7.sondademo.model;
 
 
 public class Grid {
-   Coordinates maximumCoordinates;
+   private Coordinates maximumCoordinates;
 
 
    public Grid(Coordinates maximumCoordinates) {
@@ -13,11 +13,16 @@ public class Grid {
       return maximumCoordinates;
    }
 
+
    public void setMaximumCoordinates(Coordinates maximumCoordinates) {
+
       this.maximumCoordinates = maximumCoordinates;
    }
 
-
-
-
+   @Override
+   public String toString() {
+      return "Grid{" +
+              "maximumCoordinates=" + maximumCoordinates +
+              '}';
+   }
 }
