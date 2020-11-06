@@ -1,5 +1,6 @@
 package br.com.elo7.sondademo.service;
 
+import br.com.elo7.sondademo.Exception.InvalidExplorationException;
 import br.com.elo7.sondademo.model.Coordinates;
 import br.com.elo7.sondademo.model.Exploration;
 import br.com.elo7.sondademo.model.ExplorationProbe;
@@ -55,17 +56,17 @@ public class ExplorationService implements ExplorationServiceInterface {
 
     }
 
-    private void validateExploration(Exploration exploration) throws Exception {
+    private void validateExploration(Exploration exploration) throws InvalidExplorationException {
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
         for (ExplorationProbe explorationProbe : explorationProbeList) {
-            if (exploration.getGrid().getMaximumCoordinates().getPointY() < explorationProbe.getCoordinatesPosition().getPointY() || exploration.getGrid().getMaximumCoordinates().getPointX() < explorationProbe.getCoordinatesPosition().getPointX()){
-                throw new Exception(" ");
+            if (exploration.getGrid().getMaximumCoordinates().getPointY() < explorationProbe.getCoordinatesPosition().getPointY() || exploration.getGrid().getMaximumCoordinates().getPointX() < explorationProbe.getCoordinatesPosition().getPointX()) {
+                throw new InvalidExplorationException("Invalid Exploration: one of the probes will be out of the ");
             }
         }
     }
 
     @Override
-    public List<ExplorationProbe> explore(Exploration exploration) throws Exception {
+    public List<ExplorationProbe> explore(Exploration exploration) {
         validateExploration(exploration);
         List<ExplorationProbe> explorationProbeList = exploration.getExplorationProbeList();
         List<ExplorationProbe> explorationProbesUpdates = new ArrayList<>();

@@ -1,5 +1,6 @@
 package br.com.elo7.sondademo.controller;
 
+import br.com.elo7.sondademo.Exception.InvalidExplorationException;
 import br.com.elo7.sondademo.model.Exploration;
 import br.com.elo7.sondademo.model.ExplorationProbe;
 import br.com.elo7.sondademo.model.dto.ExplorationRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -29,8 +31,12 @@ public class ExplorationController {
             explorationProbeUpdated = explorationService.explore(exploration);
             String dataUpdated = explorationService.convertToString(explorationProbeUpdated);
             return new ResponseEntity<>(new ExplorationResponse(dataUpdated), HttpStatus.OK);
+        } catch (InvalidExplorationException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(), e);
+
         } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "TEST", e);
         }
 
 
