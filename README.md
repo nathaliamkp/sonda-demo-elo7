@@ -1,7 +1,7 @@
 # sonda-demo-elo7
 
 ## Explorando Marte
-O sistema desenvolvido é uma API que simula a exploração de uma área em marte. O software está preparado para receber os pontos máximos X e Y, para montar assim 
+O sistema desenvolvido é uma API que simula a exploração de uma área em Marte. O software está preparado para receber os pontos máximos X e Y, para montar assim 
 a área que será explorada pelas sondas. Logo em seguida receberá, em sequência, as informações sobre a posição inicial que cada sonda será lançada e o caminho
 que cada sonda irá realizar. Assume-se aqui que cada sonda fará sua exploração e permanecerá na área parada quando as ordens de seu caminho terminar, sendo só 
 depois que uma que uma sonda terminar o seu percuso, que uma outra sonda será lançada, caso houver mais sondas para realizar a exploração. Presume-se que as 
