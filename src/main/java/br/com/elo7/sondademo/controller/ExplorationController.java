@@ -1,6 +1,6 @@
 package br.com.elo7.sondademo.controller;
 
-import br.com.elo7.sondademo.Exception.InvalidExplorationException;
+
 import br.com.elo7.sondademo.model.Exploration;
 import br.com.elo7.sondademo.model.ExplorationProbe;
 import br.com.elo7.sondademo.model.dto.ExplorationRequest;
@@ -24,21 +24,16 @@ public class ExplorationController {
     private ExplorationService explorationService;
 
     @PostMapping(path ="/sonda-demo/v1/explore")
-    public ResponseEntity<ExplorationResponse> explore(@RequestBody ExplorationRequest explorationRequest){
+    public ResponseEntity<ExplorationResponse> explore(@RequestBody ExplorationRequest explorationRequest) {
         try{
             Exploration exploration = explorationService.parseStringData(explorationRequest.getExplorationData());
             List<ExplorationProbe> explorationProbeUpdated;
             explorationProbeUpdated = explorationService.explore(exploration);
             String dataUpdated = explorationService.convertToString(explorationProbeUpdated);
             return new ResponseEntity<>(new ExplorationResponse(dataUpdated), HttpStatus.OK);
-        } catch (InvalidExplorationException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(), e);
-
         } catch (Exception e){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "TEST", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, " Invalid Exploration", e);
         }
-
 
     }
 
