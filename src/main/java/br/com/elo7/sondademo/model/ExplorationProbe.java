@@ -3,7 +3,7 @@ package br.com.elo7.sondademo.model;
 
 public class ExplorationProbe {
     Coordinates coordinatesPosition;
-    private char face;
+    private String face;
     private String path;
 
     public Coordinates getCoordinatesPosition() {
@@ -14,11 +14,11 @@ public class ExplorationProbe {
         this.coordinatesPosition = coordinatesPosition;
     }
 
-    public char getFace() {
+    public String getFace() {
         return face;
     }
 
-    public void setFace(char face) {
+    public void setFace(String face) {
         this.face = face;
     }
 
@@ -30,7 +30,7 @@ public class ExplorationProbe {
         this.path = path;
     }
 
-    public ExplorationProbe(Coordinates coordinatesPosition, char face, String path) {
+    public ExplorationProbe(Coordinates coordinatesPosition, String face, String path) {
         this.coordinatesPosition = coordinatesPosition;
         this.face = face;
         this.path = path;

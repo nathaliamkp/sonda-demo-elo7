@@ -43,7 +43,7 @@ public class ExplorationService implements ExplorationServiceInterface {
 
             int pointX = Integer.parseInt(probe.get(0));
             int pointY = Integer.parseInt(probe.get(1));
-            char face = probe.get(2).charAt(0);
+            String face =  Character.toString(probe.get(2).charAt(0));
             String path = parseData.get(i + 1);
 
 
@@ -74,69 +74,134 @@ public class ExplorationService implements ExplorationServiceInterface {
             String path = explorationProbe.getPath();
             Coordinates coordinatesPosition = explorationProbe.getCoordinatesPosition();
 
-            char face = explorationProbe.getFace();
+            String face = explorationProbe.getFace();
             int startX = coordinatesPosition.getPointX();
             int startY = coordinatesPosition.getPointY();
             int maximumPointY = exploration.getGrid().getMaximumCoordinates().getPointY();
             int maximumPointX = exploration.getGrid().getMaximumCoordinates().getPointX();
 
-            explorationProbe = walking(path,face, startX, startY, maximumPointY, maximumPointX, explorationProbesUpdates);
+            explorationProbe = walking(path,  face, startX, startY, maximumPointY, maximumPointX, explorationProbesUpdates);
             explorationProbesUpdates.add(explorationProbe);
 
         }
             return explorationProbesUpdates;
     }
 
-    private ExplorationProbe walking(String path, char face, int startX, int startY, int maximumPointY, int maximumPointX, List<ExplorationProbe> explorationProbesUpdated){
+    private ExplorationProbe walking(String path, String face, int startX, int startY, int maximumPointY, int maximumPointX, List<ExplorationProbe> explorationProbesUpdated){
         int walk;
         int point;
         int j = 0;
         while (j < path.length()) {
-            if (face == 'N') {
+            if (face.equals("N") ) {
                 if (path.charAt(j) == 'M') {
                     walk = 1;
                     startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
                     point = startY;
                     startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
                 } else if (path.charAt(j) == 'R') {
-                    face = 'E';
+                    face = "NE";
                 } else if (path.charAt(j) == 'L') {
-                    face = 'W';
+                    face = "NW";
                 }
-            } else if (face == 'S') {
+            } else if (face.equals("S")){
                 if (path.charAt(j) == 'M') {
                     walk = -1;
                     startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
                     point = startY;
                     startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
                 } else if (path.charAt(j) == 'R') {
-                    face = 'W';
+                    face = "SW";
                 } else if (path.charAt(j) == 'L') {
-                    face = 'E';
+                    face = "SE";
                 }
-            } else if (face == 'W') {
+            } else if (face.equals("W")) {
                 if (path.charAt(j) == 'M') {
                     walk = -1;
                     startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
                     point = startX;
                     startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
                 } else if (path.charAt(j) == 'R') {
-                    face = 'N';
+                    face = "NW";
                 } else if (path.charAt(j) == 'L') {
-                    face = 'S';
+                    face = "SW";
                 }
-            } else if (face == 'E') {
+            } else if (face.equals("E")) {
                 if (path.charAt(j) == 'M') {
                     walk = 1;
                     startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
                     point = startX;
                     startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
                 } else if (path.charAt(j) == 'R') {
-                    face = 'S';
+                    face = "SE";
                 } else if (path.charAt(j) == 'L') {
-                    face = 'N';
+                    face = "NE";
                 }
-            }
+
+            } else if (face.equals("NE")) {
+                if (path.charAt(j) == 'M') {
+                    walk = 1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    walk = 1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = "E";
+                } else if (path.charAt(j) == 'L') {
+                    face = "N";
+                }
+
+            } else if (face.equals("NW")) {
+                if (path.charAt(j) == 'M') {
+                    walk = 1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    walk = -1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = "N";
+                } else if (path.charAt(j) == 'L') {
+                    face = "W";
+                }
+
+            } else if (face.equals("SE")) {
+                if (path.charAt(j) == 'M') {
+                    walk = -1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    walk = -1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = "S";
+                } else if (path.charAt(j) == 'L') {
+                    face = "E";
+                }
+
+            } else if (face.equals("SW")) {
+                if (path.charAt(j) == 'M') {
+                    walk = -1;
+                    startY = pathIfProbreWouldPassGrid(startY, maximumPointY, walk);
+                    walk = 1;
+                    startX = pathIfProbreWouldPassGrid(startX, maximumPointX, walk);
+                    point = startY;
+                    startY = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                    point = startX;
+                    startX = pathIfTheProbeFindsAnotherProbe(explorationProbesUpdated, startY, startX, point, walk);
+                } else if (path.charAt(j) == 'R') {
+                    face = "W";
+                } else if (path.charAt(j) == 'L') {
+                    face = "S";
+                }
+
+        }
             j = j + 1;
         }
         Coordinates coordinatesPosition = new Coordinates(startX,startY);
@@ -154,11 +219,11 @@ public class ExplorationService implements ExplorationServiceInterface {
         return point;
     }
 
-    private int pathIfProbreWouldPassGrid (int point, int maximumPoit, int walk) {
+    private int pathIfProbreWouldPassGrid (int point, int maximumPoint, int walk) {
         point = point + walk;
-        if (point < maximumPoit){
+        if (point < maximumPoint){
             return point;
-        } else return maximumPoit;
+        } else return maximumPoint;
     }
 
 
@@ -169,7 +234,7 @@ public class ExplorationService implements ExplorationServiceInterface {
         for (ExplorationProbe explorationProbe : explorationProbeListUpdated) {
             String pointX = explorationProbe.getCoordinatesPosition().getPointX() + " ";
             String pointY = explorationProbe.getCoordinatesPosition().getPointY() + " ";
-            String face = Character.toString(explorationProbe.getFace());
+            String face = (explorationProbe.getFace());
             String probeUpdated = pointX + pointY + face + "\n";
             dataUpdated += probeUpdated;
         }

@@ -34,12 +34,12 @@ class ExplorationServiceTest {
 
         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
-        Coordinates coordinatesPosition1 = new Coordinates(1,3);
-        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'W',"RLM" );
+        Coordinates coordinatesPosition1 = new Coordinates(3,3);
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, "W","RMM" );
         explorationProbeList.add(explorationProbe1);
 
-        Coordinates coordinatesPosition2 = new Coordinates(3,3);
-        ExplorationProbe explorationProbe2 = new ExplorationProbe(coordinatesPosition2, 'E', "MMRMMRMRRM");
+        Coordinates coordinatesPosition2 = new Coordinates(1,3);
+        ExplorationProbe explorationProbe2 = new ExplorationProbe(coordinatesPosition2, "E", "MMRMMRMRRM");
         explorationProbeList.add(explorationProbe2);
 
 
@@ -53,11 +53,11 @@ class ExplorationServiceTest {
         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
         Coordinates coordinatesPosition1 = new Coordinates(1,2);
-        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"M" );
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, "N","M" );
         explorationProbeList.add(explorationProbe1);
 
         Coordinates coordinatesPosition2 = new Coordinates(2,3);
-        ExplorationProbe explorationProbe2 = new ExplorationProbe(coordinatesPosition2, 'W', "M");
+        ExplorationProbe explorationProbe2 = new ExplorationProbe(coordinatesPosition2, "W", "M");
         explorationProbeList.add(explorationProbe2);
 
         return new Exploration(grid, explorationProbeList);
@@ -71,7 +71,7 @@ class ExplorationServiceTest {
         List<ExplorationProbe> explorationProbeList = new ArrayList<>();
 
         Coordinates coordinatesPosition1 = new Coordinates(4,0);
-        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, 'N',"MMRMMMRM");
+        ExplorationProbe explorationProbe1 = new ExplorationProbe(coordinatesPosition1, "N","MMRMMMRM");
         explorationProbeList.add(explorationProbe1);
 
 
@@ -116,9 +116,9 @@ class ExplorationServiceTest {
 
         assertNotNull(explorationProbesUpdated);
         assertEquals(1, explorationProbesUpdated.size());
-        assertEquals(0,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointX());
-        assertEquals(3,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointY());
-        assertEquals('W',explorationProbesUpdated.get(0).getFace());
+        assertEquals(1,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointX());
+        assertEquals(5,explorationProbesUpdated.get(0).getCoordinatesPosition().getPointY());
+        assertEquals("NW",explorationProbesUpdated.get(0).getFace());
 
 
 
@@ -176,5 +176,6 @@ class ExplorationServiceTest {
 
 
     }
+
 
 }
